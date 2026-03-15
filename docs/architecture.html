@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture - langchain-multi-agent-framework</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0c0b;color:#f5f2eb;font-family:'SF Mono','Fira Code','Cascadia Code',Consolas,monospace;line-height:1.6;padding:0}
+a{color:#c8420a;text-decoration:none}a:hover{text-decoration:underline}
+.container{max-width:1200px;margin:0 auto;padding:2rem}
+h1{font-size:2rem;color:#f5f2eb;margin-bottom:0.5rem}
+h2{font-size:1.4rem;color:#c8420a;margin:2rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid #222}
+h3{font-size:1.1rem;color:#f5f2eb;margin:1.5rem 0 0.75rem}
+.badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:4px;font-size:0.8rem;font-weight:600;margin-right:0.5rem;margin-bottom:0.5rem}
+.badge-lang{background:#1a3a1a;color:#4ade80;border:1px solid #2d5a2d}
+.badge-cat{background:#1a1a3a;color:#60a5fa;border:1px solid #2d2d5a}
+.badge-ver{background:#3a1a1a;color:#f87171;border:1px solid #5a2d2d}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0}
+.card{background:#141514;border:1px solid #222;border-radius:8px;padding:1.25rem;text-align:center}
+.card-value{font-size:1.5rem;color:#c8420a;font-weight:700}
+.card-label{font-size:0.8rem;color:#888;margin-top:0.25rem}
+.arch-diagram{background:#101210;border:1px solid #222;border-radius:8px;padding:2rem;margin:1rem 0;overflow-x:auto}
+.flow-row{display:flex;justify-content:center;align-items:center;gap:0.5rem;margin:0.75rem 0;flex-wrap:wrap}
+.flow-box{background:#1a1a2e;border:2px solid #c8420a;border-radius:6px;padding:0.5rem 1rem;font-size:0.8rem;text-align:center;min-width:120px;color:#f5f2eb}
+.flow-box.accent{background:#c8420a;color:#fff;border-color:#e8520a}
+.flow-box.blue{border-color:#1982c4;background:#0f1f3a}
+.flow-box.green{border-color:#2b9348;background:#0f2a1a}
+.flow-box.purple{border-color:#533483;background:#1a0f2e}
+.flow-box.orange{border-color:#e36414;background:#2a1a0a}
+.flow-arrow{color:#c8420a;font-size:1.2rem;font-weight:bold}
+.flow-arrow-down{display:flex;justify-content:center;color:#c8420a;font-size:1.2rem;font-weight:bold}
+.flow-label{font-size:0.7rem;color:#888;display:block}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.85rem}
+th{background:#1a1a1a;color:#c8420a;padding:0.75rem;text-align:left;border-bottom:2px solid #333;white-space:nowrap}
+td{padding:0.75rem;border-bottom:1px solid #1a1a1a}
+tr:hover{background:#141514}
+code{background:#1a1a1a;padding:0.15rem 0.4rem;border-radius:3px;font-size:0.85rem;color:#e8a060}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:0.4rem 0;padding-left:1.5rem;position:relative}
+.checklist li::before{content:'[ ]';position:absolute;left:0;color:#c8420a;font-weight:bold}
+.section-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.section-box{background:#141514;border:1px solid #222;border-radius:8px;padding:1.25rem}
+.section-box h3{margin-top:0}
+footer{margin-top:3rem;padding:1.5rem 0;border-top:1px solid #222;text-align:center;font-size:0.75rem;color:#555}
+.env-table td:first-child{color:#4ade80}
+.header-bar{background:#141514;border-bottom:1px solid #222;padding:1.5rem 0}
+.header-bar .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.industry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.industry-card{background:#141514;border:1px solid #222;border-radius:8px;padding:1rem}
+.industry-card h4{color:#c8420a;margin-bottom:0.5rem;font-size:0.95rem}
+.industry-card p{font-size:0.8rem;color:#aaa}
+</style>
+</head>
+<body>
+
+<div class="header-bar">
+<div class="container">
+<div>
+<h1>langchain-multi-agent-framework</h1>
+<p style="color:#888;margin-top:0.25rem">Production-ready multi-agent orchestration using LangChain, LangGraph, and CrewAI patterns</p>
+</div>
+<div>
+<span class="badge badge-lang">Python 3.11+</span>
+<span class="badge badge-cat">AI/ML</span>
+<span class="badge badge-ver">v0.1.0</span>
+</div>
+</div>
+</div>
+
+<div class="container">
+
+<h2>Executive Summary</h2>
+<p>A multi-agent orchestration framework built on LangChain, LangGraph, and CrewAI patterns. It provides a supervisor-driven StateGraph that routes tasks to specialized agents -- Planner, Researcher, Coder, and Reviewer -- which collaborate through shared memory. The framework supports multiple LLM providers (OpenAI, Anthropic, Azure OpenAI), multiple vector store backends (ChromaDB, Pinecone, Weaviate), and includes tools for web search (Tavily, SerpAPI, DuckDuckGo), sandboxed code execution, and RAG retrieval. Designed for research workflows, development teams, and knowledge-base-backed customer support.</p>
+
+<h2>Overview</h2>
+<div class="cards">
+<div class="card"><div class="card-value">Python</div><div class="card-label">Language</div></div>
+<div class="card"><div class="card-value">AI/ML</div><div class="card-label">Category</div></div>
+<div class="card"><div class="card-value">13</div><div class="card-label">Core Dependencies</div></div>
+<div class="card"><div class="card-value">10</div><div class="card-label">Source Modules</div></div>
+<div class="card"><div class="card-value">4</div><div class="card-label">Specialized Agents</div></div>
+<div class="card"><div class="card-value">MIT</div><div class="card-label">License</div></div>
+</div>
+
+<h2>Architecture Diagram</h2>
+<div class="arch-diagram">
+<div class="flow-row">
+<div class="flow-box blue">User Request</div>
+</div>
+<div class="flow-arrow-down">v</div>
+<div class="flow-row">
+<div class="flow-box accent">Supervisor Node<br><span class="flow-label">Routes tasks to agents</span></div>
+</div>
+<div class="flow-arrow-down">v</div>
+<div class="flow-row">
+<div class="flow-box purple">Planner Agent<br><span class="flow-label">Task decomposition</span></div>
+<div class="flow-box green">Researcher Agent<br><span class="flow-label">Web search + RAG</span></div>
+<div class="flow-box orange">Coder Agent<br><span class="flow-label">Code generation</span></div>
+<div class="flow-box blue">Reviewer Agent<br><span class="flow-label">Quality assurance</span></div>
+</div>
+<div class="flow-label" style="text-align:center">LangGraph StateGraph Orchestrator (cyclic routing back to Supervisor)</div>
+<div class="flow-arrow-down">v</div>
+<div class="flow-row">
+<div class="flow-box green">Web Search<br><span class="flow-label">Tavily / SerpAPI / DDG</span></div>
+<div class="flow-box orange">Code Executor<br><span class="flow-label">Sandboxed Python</span></div>
+<div class="flow-box blue">Vector Store<br><span class="flow-label">ChromaDB / Pinecone</span></div>
+<div class="flow-box purple">Shared Memory<br><span class="flow-label">Thread-Safe State</span></div>
+</div>
+<div class="flow-label" style="text-align:center">Agent Tools + Shared State</div>
+<div class="flow-arrow-down">v</div>
+<div class="flow-row">
+<div class="flow-box accent">Final Output</div>
+</div>
+</div>
+
+<h2>Component Breakdown</h2>
+<table>
+<thead><tr><th>Component</th><th>File</th><th>Purpose</th><th>Key Dependencies</th></tr></thead>
+<tbody>
+<tr><td>Orchestrator</td><td><code>src/orchestrator.py</code></td><td>LangGraph StateGraph with supervisor routing</td><td>langgraph, langchain</td></tr>
+<tr><td>Configuration</td><td><code>src/config.py</code></td><td>Dataclass-based config for LLM, vector store, agents</td><td>pydantic</td></tr>
+<tr><td>Base Agent</td><td><code>src/agents/base_agent.py</code></td><td>Abstract base with LLM factory (OpenAI/Anthropic/Azure)</td><td>langchain-openai, langchain-anthropic</td></tr>
+<tr><td>Planner</td><td><code>src/agents/planner.py</code></td><td>Task decomposition into sub-tasks</td><td>Base agent</td></tr>
+<tr><td>Researcher</td><td><code>src/agents/researcher.py</code></td><td>Web search and RAG-based research</td><td>Web search tool, vector store</td></tr>
+<tr><td>Coder</td><td><code>src/agents/coder.py</code></td><td>Code generation with sandboxed execution</td><td>Code executor tool</td></tr>
+<tr><td>Reviewer</td><td><code>src/agents/reviewer.py</code></td><td>Code review and quality assurance</td><td>Base agent</td></tr>
+<tr><td>Web Search</td><td><code>src/tools/web_search.py</code></td><td>Multi-provider web search (Tavily, SerpAPI, DDG)</td><td>tavily-python, duckduckgo-search</td></tr>
+<tr><td>Code Executor</td><td><code>src/tools/code_executor.py</code></td><td>Sandboxed Python code execution</td><td>subprocess (stdlib)</td></tr>
+<tr><td>Vector Store</td><td><code>src/tools/vector_store.py</code></td><td>RAG retrieval from ChromaDB/Pinecone/Weaviate</td><td>langchain-chroma, chromadb</td></tr>
+<tr><td>Shared Memory</td><td><code>src/memory/conversation.py</code></td><td>Thread-safe shared memory for inter-agent communication</td><td>threading (stdlib)</td></tr>
+</tbody>
+</table>
+
+<h2>Data Flow / Request Flow</h2>
+<div class="section-box">
+<ol style="padding-left:1.5rem;color:#ccc">
+<li><strong>User Request</strong> -- User submits a task description to <code>orchestrator.run()</code>.</li>
+<li><strong>Supervisor Routing</strong> -- The supervisor node analyzes the request and routes to the appropriate agent (plan, research, code, review, or done).</li>
+<li><strong>Agent Execution</strong> -- Each agent processes its assigned sub-task using its tools and LLM. Results are written to shared memory.</li>
+<li><strong>Cyclic Routing</strong> -- After each agent completes, control returns to the supervisor, which decides the next step or terminates.</li>
+<li><strong>Tool Usage</strong> -- Researcher uses web search and vector store retrieval. Coder uses sandboxed code execution. All agents read/write shared memory.</li>
+<li><strong>Recursion Limit</strong> -- The graph enforces a configurable recursion limit (default 50) to prevent infinite loops.</li>
+<li><strong>Final Output</strong> -- When the supervisor routes to "done", the final state containing all agent results is returned.</li>
+</ol>
+</div>
+
+<h2>Security Controls</h2>
+<table>
+<thead><tr><th>Control</th><th>Implementation</th></tr></thead>
+<tbody>
+<tr><td>API Key Management</td><td>Environment variables via python-dotenv; supports OpenAI, Anthropic, and Azure keys</td></tr>
+<tr><td>Sandboxed Execution</td><td>Code executor runs Python in isolated subprocess with resource limits</td></tr>
+<tr><td>Recursion Limit</td><td>Configurable graph recursion limit prevents runaway agent loops</td></tr>
+<tr><td>Agent Timeout</td><td>Per-agent execution timeout (default 300s)</td></tr>
+<tr><td>Thread Safety</td><td>Shared memory uses thread-safe locking for concurrent agent access</td></tr>
+<tr><td>Input Validation</td><td>Pydantic v2 models for all configuration structures</td></tr>
+</tbody>
+</table>
+
+<h2>Industry Adaptation</h2>
+<div class="industry-grid">
+<div class="industry-card"><h4>Healthcare</h4><p>Clinical research teams with medical literature RAG. HIPAA-compliant data retrieval with filtered vector stores. Medical coding assistance agents.</p></div>
+<div class="industry-card"><h4>Finance</h4><p>Financial analysis research with regulatory document RAG. Automated due diligence report generation. Compliance review agents for SEC filings.</p></div>
+<div class="industry-card"><h4>Government</h4><p>Policy analysis and legislative research. Classified-environment compatible with air-gapped LLM providers. Multi-agency knowledge base aggregation.</p></div>
+<div class="industry-card"><h4>Retail</h4><p>Product catalog research and competitive analysis. Customer support with product knowledge RAG. Automated content generation for marketing.</p></div>
+<div class="industry-card"><h4>SaaS</h4><p>Developer documentation assistance. Automated code review and quality gates. Technical support with codebase-aware RAG retrieval.</p></div>
+</div>
+
+<h2>Production Readiness Checklist</h2>
+<ul class="checklist">
+<li>Configure LLM provider API key (OpenAI, Anthropic, or Azure OpenAI)</li>
+<li>Select and configure vector store backend (ChromaDB local, Pinecone, or Weaviate)</li>
+<li>Configure search API key (Tavily preferred, SerpAPI fallback)</li>
+<li>Set recursion_limit appropriate for workload complexity</li>
+<li>Populate vector store with domain-specific documents for RAG</li>
+<li>Customize agent system prompts for domain-specific behavior</li>
+<li>Test with sample tasks and validate output quality</li>
+<li>Configure execution timeouts for production workloads</li>
+<li>Set up logging and monitoring for agent execution traces</li>
+<li>Review code executor sandbox security for production deployment</li>
+</ul>
+
+<h2>Configuration / Environment Variables</h2>
+<table class="env-table">
+<thead><tr><th>Variable</th><th>Required</th><th>Default</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>OPENAI_API_KEY</code></td><td>Yes*</td><td>--</td><td>OpenAI API key (*or use another provider)</td></tr>
+<tr><td><code>ANTHROPIC_API_KEY</code></td><td>No</td><td>--</td><td>Anthropic API key (alternative provider)</td></tr>
+<tr><td><code>AZURE_OPENAI_API_KEY</code></td><td>No</td><td>--</td><td>Azure OpenAI API key (alternative provider)</td></tr>
+<tr><td><code>LLM_PROVIDER</code></td><td>No</td><td>openai</td><td>LLM provider: openai, anthropic, azure_openai</td></tr>
+<tr><td><code>LLM_MODEL</code></td><td>No</td><td>gpt-4o</td><td>Model identifier</td></tr>
+<tr><td><code>LLM_TEMPERATURE</code></td><td>No</td><td>0.0</td><td>Sampling temperature</td></tr>
+<tr><td><code>LLM_MAX_TOKENS</code></td><td>No</td><td>4096</td><td>Maximum output tokens</td></tr>
+<tr><td><code>TAVILY_API_KEY</code></td><td>No</td><td>--</td><td>Tavily search API key (preferred search)</td></tr>
+<tr><td><code>SERPAPI_API_KEY</code></td><td>No</td><td>--</td><td>SerpAPI key (fallback search)</td></tr>
+</tbody>
+</table>
+
+<h2>Deployment</h2>
+<div class="section-grid">
+<div class="section-box">
+<h3>Local Development</h3>
+<pre><code>git clone https://github.com/your-org/langchain-multi-agent-framework.git
+cd langchain-multi-agent-framework
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[search,dev]"
+cp .env.example .env
+python -m examples.research_team</code></pre>
+</div>
+<div class="section-box">
+<h3>Production</h3>
+<pre><code># Install with preferred vector store:
+pip install -e ".[search]"       # ChromaDB (default)
+pip install -e ".[search,pinecone]"  # Pinecone
+pip install -e ".[search,weaviate]"  # Weaviate
+
+# Run as async service:
+# await orchestrator.arun("task")</code></pre>
+</div>
+</div>
+
+<h2>Links</h2>
+<table>
+<tbody>
+<tr><td>Repository</td><td><a href="https://github.com/your-org/langchain-multi-agent-framework">github.com/your-org/langchain-multi-agent-framework</a></td></tr>
+<tr><td>README</td><td><a href="../README.md">README.md</a></td></tr>
+<tr><td>Changelog</td><td><a href="../CHANGELOG.md">CHANGELOG.md</a></td></tr>
+<tr><td>License</td><td><a href="../LICENSE">MIT License</a></td></tr>
+</tbody>
+</table>
+
+<footer>
+Generated on 2026-03-15 | langchain-multi-agent-framework v0.1.0 | Architecture Documentation
+</footer>
+
+</div>
+</body>
+</html>
