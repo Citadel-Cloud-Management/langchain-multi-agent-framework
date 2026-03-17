@@ -1,3 +1,7 @@
+![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
+![GitHub release](https://img.shields.io/github/v/release/kogunlowo123/langchain-multi-agent-framework)
+
 # LangChain Multi-Agent Framework
 
 A production-ready Python framework for multi-agent orchestration using LangChain, LangGraph, and CrewAI patterns. Build teams of specialized agents that collaborate to solve complex tasks with shared memory, tool access, and supervisor-driven routing. Cross-cloud compatible with OpenAI, Anthropic, and Azure OpenAI.
