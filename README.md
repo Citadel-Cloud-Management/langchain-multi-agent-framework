@@ -213,3 +213,8 @@ langchain-multi-agent-framework/
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+<!-- architecture -->
+## Architecture
+
+![Architecture diagram](docs/architecture.svg)
